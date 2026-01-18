@@ -5,13 +5,13 @@
 #ifndef RIGIDBOXES_RENDERER_H
 #define RIGIDBOXES_RENDERER_H
 #include <vector>
-#include "Particle.h"
+#include "../Physics/Particle.h"
 #include "VertexArray.h"
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_projection.hpp>
 #include "Shader.h"
-#include "Plane.h"
+#include "../Utility/Plane.h"
 
 using mat4 = glm::mat4;
 

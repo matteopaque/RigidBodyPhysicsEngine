@@ -2,7 +2,7 @@
 // Created by Clef on 1/13/26.
 //
 
-#include "Game.h"
+#include "../Core/Game.h"
 
 #include <iostream>
 #include <ranges>

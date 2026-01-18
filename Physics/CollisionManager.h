@@ -9,7 +9,7 @@
 
 #include "physicsRegistry.h"
 #include "ParticleContact.h"
-#include "Plane.h"
+#include "../Utility/Plane.h"
 using cID = unsigned int;
 using CollidableObject = std::variant<Plane*>;
 class CollisionManager

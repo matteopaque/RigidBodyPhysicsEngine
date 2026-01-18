@@ -4,17 +4,17 @@
 
 #ifndef RIGIDBOXES_GAME_H
 #define RIGIDBOXES_GAME_H
-#include "glad/include/glad/glad.h"
+#include "../glad/include/glad/glad.h"
 #include <GLFW/glfw3.h>
 
-#include "Camera.h"
-#include "CollisionManager.h"
-#include "firstPersonCameraController.h"
-#include "Renderer.h"
-#include "Shader.h"
-#include "Particle.h"
-#include "physicsRegistry.h"
-#include "Timer.h"
+#include "../Utility/Camera.h"
+#include "../Physics/CollisionManager.h"
+#include "../Utility/firstPersonCameraController.h"
+#include "../Graphics/Renderer.h"
+#include "../Graphics/Shader.h"
+#include "../Physics/Particle.h"
+#include "../Physics/physicsRegistry.h"
+#include "../Utility/Timer.h"
 
 class Game
 {

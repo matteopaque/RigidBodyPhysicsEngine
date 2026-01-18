@@ -6,7 +6,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "glad/include/glad/glad.h"
+#include "../glad/include/glad/glad.h"
 #include <glm/gtc/type_ptr.hpp>
 
 void Shader::SetShader(std::string vertexPath, std::string fragmentPath)
