@@ -16,8 +16,8 @@ public:
     float penetration;
     vec3 ContactNormal;
     ParticleContact(Particle * p1, Particle * p2, float restitution, vec3 ContactNormal, float penetration);
-protected:
     void resolve(float deltaTime);
+protected:
     float calculateSeparatingVelocity() const;
 private:
     void resolveVelocity(float deltaTime);

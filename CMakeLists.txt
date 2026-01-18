@@ -9,7 +9,9 @@ add_library(glad ${PROJECT_SOURCE_DIR}/glad/include/glad/glad.h ${PROJECT_SOURCE
         firstPersonCameraController.h
         Plane.h
         ParticleContact.cpp
-        ParticleContact.h)
+        ParticleContact.h
+        CollisionManager.cpp
+        CollisionManager.h)
 find_package(glfw3)
 find_package(glm)
 

@@ -11,7 +11,7 @@ class Particle
 {
     vec3 position = {0.f, 0.f, 0.f};
     vec3 velocity = {0.f, 0.f, 0.f};
-    vec3 acceleration = {0.f, -5.f, 0.f};
+    vec3 acceleration = {0.f, -10.f, 0.f};
     vec3 forceAccul = {0.f, 0.f, 0.f};
     float inverseMass = 1;
 public:
@@ -28,6 +28,7 @@ public:
     void addMomentum(vec3 toAdd);
     vec3 getVelocity() const;
     float getInverseMass();
+    float getMass();
 
 };
 

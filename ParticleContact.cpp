@@ -13,6 +13,7 @@ p1(p1), p2(p2), restitution(restitution), ContactNormal(ContactNormal), penetrat
 void ParticleContact::resolve(float deltaTime)
 {
     resolveVelocity(deltaTime);
+    resolvePenetration(deltaTime);
 }
 
 float ParticleContact::calculateSeparatingVelocity() const
@@ -46,5 +47,33 @@ void ParticleContact::resolveVelocity(float deltaTime)
 
 void ParticleContact::resolvePenetration(float deltaTime)
 {
+    if (penetration <= 0 )
+        return;
+    if (!p2)
+    {
+        p1->getPosition() += ContactNormal*penetration;
+        return;
+    }
+    const float inverseMass1 = p1->getInverseMass();
+    const float inverseMass2 = p2->getInverseMass();
 
+    if (inverseMass2 == 0.f & inverseMass1 == 0.f)
+        return;
+    if (inverseMass1 == 0.f)
+    {
+        p2->getPosition() += -1.f*ContactNormal*penetration;
+        return;
+    }
+    if (inverseMass2 == 0.f)
+    {
+        p1->getPosition() += ContactNormal*penetration;
+    }
+    const float Mass1 = 1.f/inverseMass1;
+    const float Mass2 = 1.f/inverseMass2;
+    const float deltaLength1 = penetration*(Mass2/(Mass1+Mass2));
+    const float deltaLength2 = penetration*(Mass1/(Mass1+Mass2));
+    const vec3 deltaPosition1 = ContactNormal*deltaLength1;
+    const vec3 deltaPosition2 = ContactNormal*deltaLength2*(-1.f);
+    p1->getPosition() += deltaPosition1;
+    p2->getPosition() += deltaPosition2;
 }

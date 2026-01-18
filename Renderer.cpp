@@ -125,6 +125,7 @@ void Renderer::draw(const Plane& toDraw)
         model = glm::rotate(model, glm::acos(glm::dot({0.f, 1.f, 0.f}, toDraw.normal)), glm::normalize(glm::cross({0.f, 1.f, 0.f}, toDraw.normal)));
     else
         model = glm::rotate(model, glm::acos(glm::dot({0.f, 1.f, 0.f}, toDraw.normal)), {1.f, 0.f, 0.f});
+    model = glm::scale(model, glm::vec3(10.f));
     shader->use();
     shader->setMat4("model", model);
     shader->setMat4("view", viewMatrix);

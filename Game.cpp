@@ -40,12 +40,15 @@ void Game::Init()
 {
     GraphicsInit();
 
-    timer.addTask(3.f, [&](int TimesCalledBefore)
+    timer.addTask(0.4f, [&](int TimesCalledBefore)
     {
-        registry.addParticle(Particle({0.f, 4.f, -5.f}));
+        auto particle = Particle({0.f, 4.f, -5.f});
+        particle.addMomentum(glm::vec3({4.f, 0.f, 0.f})*particle.getMass());
+        registry.addParticle(std::move(particle));
         return true;
     });
-    plane.position = {0.f, -2.f, 0.f};
+    plane.position = {0.f, -4.f, 0.f};
+    collisionManager.addObject(plane);
 }
 
 void Game::Exit()
@@ -94,6 +97,8 @@ void Game::updateWorld(float deltaTime)
     //particle.getPosition() += vec3({0.f, 0.f, -1.f}) *(float) deltaTime;
     timer.update(deltaTime);
     registry.update(deltaTime);
+    collisionManager.findCollisions();
+    collisionManager.resolveCollisions(deltaTime);
 }
 
 void Game::startLoop()

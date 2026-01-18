@@ -35,11 +35,6 @@ gID physicsRegistry::addGenerator(std::unique_ptr<forceGenerator> &toAdd)
     topGID++;
     return id;
 }
-template <typename T>
-gID physicsRegistry::addGenerator(T&& toAdd)
-{
-    return addGenerator(std::make_unique<T>(toAdd));
-}
 
 pID physicsRegistry::addParticle(Particle&& toAdd)
 {

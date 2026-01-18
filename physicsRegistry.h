@@ -31,7 +31,8 @@ public:
     pID addParticle(Particle && toAdd);
     gID addGenerator(std::unique_ptr<forceGenerator> &toAdd);
     template<typename T>
-    gID addGenerator(T && toAdd);
+    gID addGenerator(T && toAdd)
+    {return addGenerator(std::make_unique<T>(toAdd));}
     void createLink(pID particleID, gID generatorID);
     void removeLink(pID particleID, gID generatorID);
 

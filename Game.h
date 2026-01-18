@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
+#include "CollisionManager.h"
 #include "firstPersonCameraController.h"
 #include "Renderer.h"
 #include "Shader.h"
@@ -26,9 +27,10 @@ private:
     Timer timer;
     firstPersonCameraController firstPersonController;
     Plane plane{};
+    CollisionManager collisionManager;
 
 public:
-    Game() : firstPersonController(camera, 0.1f)
+    Game() : firstPersonController(camera, 0.1f), collisionManager(registry)
     {
     }
 

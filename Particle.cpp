@@ -22,6 +22,11 @@ vec3 Particle::getVelocity() const
 {
     return velocity;
 }
+float Particle::getMass()
+{
+    return 1.f/inverseMass;
+}
+
 
 float Particle::getInverseMass()
 {
