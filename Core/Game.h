@@ -15,6 +15,7 @@
 #include "../Physics/Particle.h"
 #include "../Physics/physicsRegistry.h"
 #include "../Utility/Timer.h"
+#include "../Physics/RigidBody.h"
 
 class Game
 {

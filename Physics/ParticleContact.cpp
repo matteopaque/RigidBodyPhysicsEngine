@@ -33,6 +33,17 @@ void ParticleContact::resolveVelocity(float deltaTime)
         return;
     float newSeparatingVelocity = -separatingVelocity*restitution;
 
+    vec3 Acceleration = p1->getAcceleration();
+    if (p2)
+        Acceleration - p2->getAcceleration();
+    float accCausedSepVelocity = glm::dot(Acceleration, ContactNormal) * deltaTime;
+    if (accCausedSepVelocity < 0)
+    {
+        newSeparatingVelocity -= accCausedSepVelocity * restitution;
+        if (newSeparatingVelocity < 0) newSeparatingVelocity = 0;
+    }
+
+
     float deltaVelocity = newSeparatingVelocity-separatingVelocity;
     float inverseMass = p1->getInverseMass();
     if (p2) inverseMass += p2->getInverseMass();

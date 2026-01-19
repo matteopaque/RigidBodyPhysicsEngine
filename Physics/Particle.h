@@ -13,7 +13,9 @@ class Particle
     vec3 velocity = {0.f, 0.f, 0.f};
     vec3 acceleration = {0.f, -10.f, 0.f};
     vec3 forceAccul = {0.f, 0.f, 0.f};
+    vec3 lastAccel = {0.f, 0.f, 0.f};
     float inverseMass = 1;
+    float dampening = 0.98f;
 public:
     float radius = 1;
     // clears forces
@@ -29,6 +31,7 @@ public:
     vec3 getVelocity() const;
     float getInverseMass();
     float getMass();
+    vec3 getAcceleration();
 
 };
 

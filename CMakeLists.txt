@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 4.0)
 project(rigidBoxes)
 
 set(CMAKE_CXX_STANDARD 20)
-add_library(glad ${PROJECT_SOURCE_DIR}/glad/include/glad/glad.h ${PROJECT_SOURCE_DIR}/glad/src/glad.c
-)
+add_library(glad ${PROJECT_SOURCE_DIR}/glad/include/glad/glad.h ${PROJECT_SOURCE_DIR}/glad/src/glad.c)
 find_package(glfw3)
 find_package(glm)
 
@@ -38,7 +37,11 @@ add_executable(rigidBoxes Core/main.cpp
         Physics/ParticleContact.h
         Physics/CollisionManager.cpp
         Physics/CollisionManager.h
-        Utility/Camera.h)
+        Utility/Camera.h
+        Physics/RigidBody.cpp
+        Physics/RigidBody.h
+        Physics/Contact.cpp
+        Physics/Contact.h)
 target_link_libraries(rigidBoxes glfw)
 target_link_libraries(rigidBoxes glad)
 target_link_libraries(rigidBoxes glm::glm)

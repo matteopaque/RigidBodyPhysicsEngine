@@ -9,18 +9,32 @@
 
 #include "physicsRegistry.h"
 #include "ParticleContact.h"
+#include "Contact.h"
 #include "../Utility/Plane.h"
 using cID = unsigned int;
 using CollidableObject = std::variant<Plane*>;
+using ContactData = std::vector<Contact>;
+// pair of RigidBody with either Rigidbody or Collidable object
+using RigidPair = std::pair<RigidBody, std::variant<RigidBody, CollidableObject>>;
+
+struct RigidCollision
+{
+    RigidPair pair;
+    ContactData data;
+};
+
 class CollisionManager
 {
     std::map<cID, CollidableObject> collidableObjects;
     physicsRegistry* registry;
-    std::vector<ParticleContact> contacts;
+    std::vector<ParticleContact> ParticleContacts;
+    std::vector<RigidCollision> contacts;
     cID topID = 0;
 
 public:
     explicit CollisionManager(physicsRegistry& PhysicsRegistry);
+    void findParticleCollisions();
+
     template<typename T>
     cID addObject(T& toAdd)
     {
@@ -33,8 +47,10 @@ public:
     void resolveCollisions(float deltaTime);
 
 private:
+    ContactData detectContacts(RigidBody& r1, RigidBody & r2);
     std::optional<ParticleContact> ParticleAndParticle(Particle& p1, Particle& p2);
     std::optional<ParticleContact> ParticleAndPlane(Particle& p1, Plane& plane);
+    ContactData BoxAndPlane(RigidBody& r1, Plane& plane);
 
 };
 

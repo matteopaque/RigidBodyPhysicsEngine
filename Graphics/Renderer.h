@@ -12,6 +12,7 @@
 #include <glm/ext/matrix_projection.hpp>
 #include "Shader.h"
 #include "../Utility/Plane.h"
+#include "../Physics/RigidBody.h"
 
 using mat4 = glm::mat4;
 
@@ -36,6 +37,7 @@ public:
     void setPerspectiveProjectionMatrix(float Fov);
     void draw(const Particle& particle);
     void draw(const Plane & toDraw);
+    void draw(RigidBody & toDraw);
 
 };
 

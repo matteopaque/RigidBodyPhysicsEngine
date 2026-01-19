@@ -133,3 +133,15 @@ void Renderer::draw(const Plane& toDraw)
     plane.draw();
 }
 
+void Renderer::draw(RigidBody& toDraw)
+{
+    toDraw.calculateDerivedData();
+    mat4 model = toDraw.modelMatrix;
+    model = glm::scale(model, glm::vec3(2.f*toDraw.semiWidthx, 2.f*toDraw.semiHeighty, 2.f*toDraw.semiLengthZ));
+    shader->use();
+    shader->setMat4("model", model);
+    shader->setMat4("view", viewMatrix);
+    shader->setMat4("projection", projectionMatrix);
+    box.draw();
+}
+

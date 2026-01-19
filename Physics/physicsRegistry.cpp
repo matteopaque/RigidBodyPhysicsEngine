@@ -9,7 +9,7 @@
 
 void physicsRegistry::update(float deltaTime)
 {
-    erase_if(forceLinks, [&](std::pair<pID,gID> &pair)
+    erase_if(forceLinksParticle, [&](std::pair<pID,gID> &pair)
     {
         if (Generators.find(pair.second) == Generators.end())
             return true;
@@ -17,13 +17,29 @@ void physicsRegistry::update(float deltaTime)
             return true;
         return false;
     });
-    for (auto & [particle, generator] : forceLinks)
+    erase_if(forceLinksBody, [&](std::pair<rID,gID> &pair)
+    {
+        if (Generators.find(pair.second) == Generators.end())
+            return true;
+        if (Bodies.find(pair.first) == Bodies.end())
+            return true;
+        return false;
+    });
+    for (auto & [particle, generator] : forceLinksParticle)
     {
         Generators[generator]->addForce(Particles[particle]);
+    }
+    for (auto & [rigidBody, generator] : forceLinksBody)
+    {
+        Generators[generator]->addForce(Bodies.at(rigidBody));
     }
     for (auto& particle : Particles | std::views::values)
     {
         particle.integrate(deltaTime);
+    }
+    for (auto & rigidBody : Bodies | std::views::values)
+    {
+        rigidBody.integrate(deltaTime);
     }
 
 }
@@ -44,9 +60,9 @@ pID physicsRegistry::addParticle(Particle&& toAdd)
     return id;
 }
 
-void physicsRegistry::createLink(pID particleID, gID generatorID)
+void physicsRegistry::createLinkParticle(pID particleID, gID generatorID)
 {
-    forceLinks.emplace_back(particleID, generatorID);
+    forceLinksParticle.emplace_back(particleID, generatorID);
 }
 
 forceGenerator& physicsRegistry::getGenerator(gID generatorID)
@@ -61,7 +77,7 @@ Particle& physicsRegistry::getParticle(pID particleID)
 
 void physicsRegistry::removeGenerator(gID generatorID)
 {
-    std::erase_if(forceLinks, [&](std::pair<pID, gID> pair)
+    std::erase_if(forceLinksParticle, [&](std::pair<pID, gID> pair)
     {
         return pair.second==generatorID;
     });
@@ -72,7 +88,7 @@ void physicsRegistry::removeGenerator(gID generatorID)
 }
 
 void physicsRegistry::removeParticle(pID particleID)
-{std::erase_if(forceLinks, [&](std::pair<pID, gID> pair)
+{std::erase_if(forceLinksParticle, [&](std::pair<pID, gID> pair)
     {
         return pair.first == particleID;
     });
@@ -83,12 +99,45 @@ void physicsRegistry::removeParticle(pID particleID)
 
 }
 
-void physicsRegistry::removeLink(pID particleID, gID generatorID)
+void physicsRegistry::removeLinkParticle(pID particleID, gID generatorID)
 {
-    std::erase_if(forceLinks, [&](std::pair<pID, gID> pair)
+    std::erase_if(forceLinksParticle, [&](std::pair<pID, gID> pair)
     {
         return pair.first == particleID && pair.second == generatorID;
     });
 }
 
+RigidBody& physicsRegistry::getRigidBody(rID bodyID)
+{
+    return Bodies.at(bodyID);
+}
 
+rID physicsRegistry::addRigidBody(RigidBody&& body)
+{
+    Bodies[topRID] = body;
+    const auto id = topRID;
+    topRID++;
+    return id;
+}
+
+void physicsRegistry::removeBody(rID toRemove)
+{
+    erase_if(forceLinksBody, [toRemove](auto & pair)
+    {
+        return pair.first == toRemove;
+    });
+    Bodies.erase(toRemove);
+}
+
+void physicsRegistry::createLinkBody(rID bodyID, gID generatorID)
+{
+    forceLinksBody.emplace_back(bodyID, generatorID);
+}
+
+void physicsRegistry::removeLinkBody(rID bodyID, gID generatorID)
+{
+    erase_if(forceLinksBody, [bodyID, generatorID](auto & pair)
+    {
+        return pair.first == bodyID && pair.second == generatorID;
+    });
+}

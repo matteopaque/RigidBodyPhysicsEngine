@@ -45,6 +45,13 @@ void Game::Init()
         auto particle = Particle({0.f, 4.f, -5.f});
         particle.addMomentum(glm::vec3({4.f, 0.f, 0.f})*particle.getMass());
         registry.addParticle(std::move(particle));
+
+        auto particle2 = Particle({1.f, 10.f, -5.5f});
+        registry.addParticle(std::move(particle2));
+        auto body = RigidBody({0.f, 5.f, 0.f});
+        body.setDimensions(5.f, 1.f, 3.f);
+        registry.addRigidBody(std::move(body));
+
         return true;
     });
     plane.position = {0.f, -4.f, 0.f};
@@ -81,6 +88,11 @@ void Game::printOutput()
     for (const auto &particle : particles | std::views::values)
     {
         renderer.draw(particle);
+    }
+    auto & bodies = registry.getRigidBodies();
+    for (auto &body : bodies | std::views::values)
+    {
+        renderer.draw(body);
     }
     renderer.draw(plane);
 

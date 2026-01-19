@@ -4,6 +4,8 @@
 
 #include "Particle.h"
 
+#include <chrono>
+
 #include "physicsRegistry.h"
 
 Particle::Particle(vec3 position) : position(position)
@@ -63,10 +65,17 @@ void Particle::addForce(vec3 toAdd)
 
 void Particle::integrate(float deltaTime)
 {
+    lastAccel = {0.f, 0.f, 0.f};
     position += velocity * deltaTime;
-    vec3 toAccelerate = acceleration + forceAccul*inverseMass;
-    velocity += toAccelerate * deltaTime;
+    lastAccel = acceleration + forceAccul*inverseMass;
+    velocity += lastAccel * deltaTime;
+    velocity *= std::powf(dampening, deltaTime);
     forceAccul = {0.f, 0.f, 0.f};
 }
+vec3 Particle::getAcceleration()
+{
+    return lastAccel;
+}
+
 
 
