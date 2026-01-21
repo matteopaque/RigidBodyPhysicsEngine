@@ -49,6 +49,9 @@ void RigidBody::clearAccumulators()
 
 void RigidBody::integrate(float deltaTime)
 {
+    position += velocity * deltaTime;
+    if (glm::length(rotation) > 0.02f)
+        orientation = glm::rotate(orientation, glm::length(rotation)*deltaTime, glm::normalize(rotation));
     calculateWorldInverseInertiaTensor();
     auto toAccel = acceleration;
     toAccel += forceAccum*inverseMass;
@@ -58,9 +61,6 @@ void RigidBody::integrate(float deltaTime)
     velocity *= std::powf(dampening, deltaTime);
     rotation *= std::powf(angularDampening, deltaTime);
 
-    position += velocity * deltaTime;
-    if (glm::length(rotation) > 0.02f)
-        orientation = glm::rotate(orientation, glm::length(rotation)*deltaTime, glm::normalize(rotation));
 
     calculateDerivedData();
     clearAccumulators();
@@ -68,10 +68,36 @@ void RigidBody::integrate(float deltaTime)
 
 void RigidBody::setBoxInertiaTensor()
 {
+    float mass = 1.f/inverseMass;
     mat3 tensor(1.f);
-    tensor[0][0] = (1.f/12.f)*std::powf((semiHeighty*2.f),2.f)*std::powf((semiLengthZ*2.f),2);
-    tensor[1][1] = (1.f/12.f)*std::powf((semiWidthx*2.f),2.f)*std::powf((semiLengthZ*2.f),2);
-    tensor[2][2] = (1.f/12.f)*std::powf((semiWidthx*2.f),2.f)*std::powf((semiHeighty*2.f),2);
+    tensor[0][0] = mass*(1.f/12.f)*(std::powf((semiHeighty*2.f),2.f)+std::powf((semiLengthZ*2.f),2));
+    tensor[1][1] = mass*(1.f/12.f)*(std::powf((semiWidthx*2.f),2.f)+std::powf((semiLengthZ*2.f),2));
+    tensor[2][2] = mass*(1.f/12.f)*(std::powf((semiWidthx*2.f),2.f)+std::powf((semiHeighty*2.f),2));
+
+
     inverseInertiaTensor = glm::inverse(tensor);
 }
 
+// x, y, then z
+vec3 RigidBody::getAxis(unsigned index)
+{
+    switch (index)
+    {
+    case 0:
+        return glm::mat3_cast(orientation) * vec3 ({1.f, 0.f, 0.f});
+    case 1:
+        return glm::mat3_cast(orientation) * vec3 ({0.f, 1.f, 0.f});
+    case 2:
+        return glm::mat3_cast(orientation) * vec3 ({0.f, 0.f, 1.f});
+    }
+    return vec3({0.f, 0.f, 0.f});
+}
+
+
+void RigidBody::addAngularMomentumAtWorldPoint(glm::vec3 momentum, glm::vec3 worldPoint)
+{
+    velocity += inverseMass*momentum;
+    auto angularMoment = glm::cross(worldPoint - position, momentum);
+    calculateWorldInverseInertiaTensor();
+    rotation += worldInverseInertiaTensor * angularMoment;
+}

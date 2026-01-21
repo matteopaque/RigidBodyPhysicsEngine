@@ -15,12 +15,14 @@ using cID = unsigned int;
 using CollidableObject = std::variant<Plane*>;
 using ContactData = std::vector<Contact>;
 // pair of RigidBody with either Rigidbody or Collidable object
-using RigidPair = std::pair<RigidBody, std::variant<RigidBody, CollidableObject>>;
+using RigidPair = std::pair<RigidBody*, std::variant<RigidBody*, CollidableObject>>;
 
 struct RigidCollision
 {
     RigidPair pair;
     ContactData data;
+    float restitution;
+    float friction;
 };
 
 class CollisionManager
@@ -51,6 +53,13 @@ private:
     std::optional<ParticleContact> ParticleAndParticle(Particle& p1, Particle& p2);
     std::optional<ParticleContact> ParticleAndPlane(Particle& p1, Plane& plane);
     ContactData BoxAndPlane(RigidBody& r1, Plane& plane);
+    std::optional<Contact> BoxAndPlane(RigidBody & r1, Plane& plane, int index);
+    std::optional<Contact> BoxAndPoint(RigidBody & r1, vec3);
+    std::optional<Contact> PlaneAndPoint(Plane & plane, vec3);
+    // final boss
+    bool BoxAndBox(RigidCollision& data);
+    std::optional<Contact> BoxAndBox(RigidBody& r1, RigidBody & r2, int index);
+    void updateCollision(RigidCollision& data);
 
 };
 

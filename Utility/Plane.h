@@ -15,6 +15,11 @@ public:
     float getOffset() const
     {
         return glm::dot(position, normal);
+    }
+
+    bool operator==(const Plane& plane) const
+    {
+        return position == plane.position && normal == plane.normal;
     };
 };
 

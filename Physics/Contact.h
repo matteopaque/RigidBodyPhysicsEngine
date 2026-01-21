@@ -10,9 +10,10 @@ using vec3 = glm::vec3;
 class Contact
 {
 public:
-    vec3 contactPoint;
-    vec3 contactNormal;
+    vec3 point;
+    vec3 normal;
     float penetration;
+    int vertex;
 };
 
 

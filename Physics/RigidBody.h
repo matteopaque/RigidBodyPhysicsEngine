@@ -47,6 +47,11 @@ public:
     void addForceAtLocalPoint(const vec3 force, const vec3 localPoint);
     void clearAccumulators();
     void integrate(float deltaTime);
+    float getMass()
+    {
+        return 1.f/inverseMass;
+    }
+    void addAngularMomentumAtWorldPoint(glm::vec3 momentum, glm::vec3 worldPoint);
     void setDimensions(float x, float y, float z)
     {
         semiWidthx = x;
@@ -54,7 +59,11 @@ public:
         semiLengthZ = z;
         setBoxInertiaTensor();
     }
-
+    vec3 getAxis(unsigned);
+    bool operator==(const RigidBody& r1) const
+    {
+        return position == r1.position && velocity == r1.velocity && semiWidthx == r1.semiWidthx && semiHeighty == r1.semiHeighty && rotation == r1.rotation;
+    };
 };
 
 

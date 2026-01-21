@@ -24,8 +24,8 @@ void Game::GraphicsInit()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     glViewport(0, 0, 800, 600);
@@ -40,22 +40,25 @@ void Game::Init()
 {
     GraphicsInit();
 
-    timer.addTask(0.4f, [&](int TimesCalledBefore)
+    timer.addTask(3.f, [&](int TimesCalledBefore)
     {
-        auto particle = Particle({0.f, 4.f, -5.f});
-        particle.addMomentum(glm::vec3({4.f, 0.f, 0.f})*particle.getMass());
-        registry.addParticle(std::move(particle));
 
-        auto particle2 = Particle({1.f, 10.f, -5.5f});
-        registry.addParticle(std::move(particle2));
         auto body = RigidBody({0.f, 5.f, 0.f});
+        if (TimesCalledBefore%2==0)
         body.setDimensions(5.f, 1.f, 3.f);
+        if ((TimesCalledBefore%2)==1)
+            body.setDimensions(3.f, 1.f, 2.f);
+        body.orientation = glm::rotate(body.orientation, glm::pi<float>()/3.f, glm::normalize(vec3(1.f, 1.f, 1.f)));
+        body.inverseMass = 1.f/10.f;
+        body.setBoxInertiaTensor();
         registry.addRigidBody(std::move(body));
-
-        return true;
+        if (TimesCalledBefore < 1)
+            return true;
+        return false;
     });
     plane.position = {0.f, -4.f, 0.f};
     collisionManager.addObject(plane);
+    camera.position = {0.f, 0.f, 20.f};
 }
 
 void Game::Exit()
@@ -74,7 +77,7 @@ void Game::processInput(float deltaTime)
     firstPersonController.handleInput(window, deltaTime);
     double x,y;
     glfwGetCursorPos(window, &x, &y);
-    firstPersonController.cursorHandle(window, x, y);
+    //firstPersonController.cursorHandle(window, x, y);
 }
 
 void Game::printOutput()
@@ -111,6 +114,7 @@ void Game::updateWorld(float deltaTime)
     registry.update(deltaTime);
     collisionManager.findCollisions();
     collisionManager.resolveCollisions(deltaTime);
+    std::cout << "collision\n";
 }
 
 void Game::startLoop()
@@ -123,6 +127,10 @@ void Game::startLoop()
         current = glfwGetTime();
         deltaTime = current - last;
         last = current;
+        if (deltaTime > 0.016f)
+        {
+            deltaTime = 0.016f;
+        }
 
         processInput(deltaTime);
         updateWorld(deltaTime);
